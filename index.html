@@ -1457,8 +1457,8 @@
         // ROULETTE RED NUMBERS
         const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
-        // ===== AUTH FUNCTIONS =====
-        window.handleLogin = async function() {
+// ===== AUTH FUNCTIONS =====
+        async function handleLogin() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
             const errorEl = document.getElementById('loginError');
@@ -1483,9 +1483,9 @@
             } catch (e) {
                 errorEl.textContent = 'Błąd: ' + e.message;
             }
-        };
+        }
 
-        window.handleRegister = async function() {
+        async function handleRegister() {
             const username = document.getElementById('registerUsername').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirm = document.getElementById('registerPasswordConfirm').value;
@@ -1529,7 +1529,7 @@
             } catch (e) {
                 errorEl.textContent = 'Błąd: ' + e.message;
             }
-        };
+        }
 
         window.handleLogout = function() {
             currentUser = null;
@@ -1587,6 +1587,18 @@
             document.getElementById('registerSuccess').textContent = '';
         };
 
+        // Podpięcie przycisków do funkcji auth
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('registerBtn').addEventListener('click', handleRegister);
+        
+        // Obsługa Enter w formularzach
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('registerPasswordConfirm').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleRegister();
+        });
+
         // ===== GAME NAVIGATION =====
         window.startGame = function(game) {
             document.getElementById('mainMenu').classList.remove('active');
@@ -1595,11 +1607,17 @@
             if (game === 'slots') {
                 document.getElementById('slotsScreen').classList.add('active');
                 watchSlotLobbies();
-            } else if (game === 'roulette') {
+} else if (game === 'roulette') {
                 document.getElementById('rouletteScreen').classList.add('active');
-                
-                                    // ===== SLOT MACHINE FUNCTIONS =====
-        window.toggleCreateSlotLobby = function() {
+                watchRouletteLobbies();
+            } else if (game === 'blackjack') {
+                document.getElementById('blackjackScreen').classList.add('active');
+            } else if (game === 'poker') {
+                document.getElementById('pokerScreen').classList.add('active');
+            }
+        };
+
+        // ===== SLOT MACHINE FUNCTIONS =====        window.toggleCreateSlotLobby = function() {
             const form = document.getElementById('createSlotLobbyForm');
             form.classList.toggle('active');
         };
@@ -2137,7 +2155,7 @@
             }
         }
 
-        async function addPlayerToRouletteLobby(id, lobby) {
+async function addPlayerToRouletteLobby(id, lobby) {
             if (!lobby.players || !lobby.players[currentUser.username]) {
                 await set(ref(db, `roulette_lobbies/${id}/players/${currentUser.username}`), {
                     username: currentUser.username,
@@ -2147,8 +2165,9 @@
             }
             alert(`Dołączono do pokoju "${lobby.name}"!`);
             enterRouletteGame(id);
-                                    }
-                                    function enterRouletteGame(id) {
+        }
+        
+        function enterRouletteGame(id) {
             currentRouletteLobbyId = id;
             document.getElementById('rouletteScreen').classList.remove('active');
             document.getElementById('rouletteGameContainer').classList.add('active');
@@ -2428,8 +2447,8 @@
             } else if (state === 'spinning' || state === 'result') { 
                 statusEl.textContent = 'Czekaj... 🎲'; 
                 statusEl.className = 'game-status spinning'; 
-            }
-
-              </script>
+}
+        }
+    </script>
 </body>
 </html>
