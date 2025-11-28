@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 Casino Games Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* ===== AUTH SCREEN ===== */
+        .auth-container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 100px auto;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .auth-container h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons button {
+            flex: 1;
+            padding: 12px;
+            background: #0f3460;
+            color: #fff;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-buttons button.active {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .tab-buttons button:hover {
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-button:hover {
+            background: #ffed4e;
+            transform: scale(1.02);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .success {
+            color: #51cf66;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        #loginForm, #registerForm { display: none; }
+        #loginForm.active, #registerForm.active { display: block; }
+
+        /* ===== MENU GŁÓWNE ===== */
+        #mainMenu {
+            display: none;
+            text-align: center;
+        }
+
+        #mainMenu.active { display: block; }
+
+        .menu-header {
+            margin-bottom: 60px;
+            padding: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #ffd700;
+            color: #ffd700;
+        }
+
+        .user-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .user-info-header span {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .admin-badge {
+            background: #ff9800;
+            color: black;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b71c1c;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+            border-color: #ffed4e;
+        }
+
+        .game-card .icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .game-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .game-card p {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        /* ===== GAME SCREENS ===== */
+        .game-screen {
+            display: none;
+        }
+
+        .game-screen.active { display: block; }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .game-header h1 {
+            font-size: 2.5rem;
+            color: #ffd700;
+        }
+
+        .back-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #b71c1c;
+        }
+
+        /* ===== SLOT MACHINE ===== */
+        .lobby-list-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .lobby-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .lobby-controls button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .lobby-controls button:hover {
+            background: #ffed4e;
+            transform: scale(1.05);
+        }
+
+        .create-lobby-form {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .create-lobby-form.active { display: block; }
+
+        .create-lobby-form h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-row input, .form-row select {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-row input::placeholder {
+            color: #aaa;
+        }
+
+        .form-row select {
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-actions button {
+            flex: 1;
+            padding: 12px;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .form-actions button:hover {
+            background: #ffed4e;
+        }
+
+        .form-actions button.cancel {
+            background: #666;
+            color: white;
+        }
+
+        .form-actions button.cancel:hover {
+            background: #888;
+        }
+
+        .lobbies-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .lobby-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffd700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lobby-item h3 {
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .lobby-item p {
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        .lobby-item button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+
+        .lobby-item button:hover {
+            background: #ffed4e;
+        }
+
+        .lobby-item button.delete-btn {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .lobby-item button.delete-btn:hover {
+            background: #b71c1c;
+        }
+
+        .lobby-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ===== SLOT GAME VIEW ===== */
+        .slot-game-container {
+            display: none;
+        }
+
+        .slot-game-container.active { display: block; }
+
+        .slot-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .slot-balance {
+            text-align: center;
+        }
+
+        .slot-balance h3 {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .slot-balance .amount {
+            font-size: 2rem;
+            color: #51cf66;
+            font-weight: bold;
+        }
+
+        .slot-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .slot-controls label {
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .slot-controls input {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            color: #fff;
+            width: 120px;
+            text-align: center;
+        }
+
+        .slot-controls button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .slot-controls button:hover {
+            background: #ffed4e;
+        }
+
+        .slot-controls button:disabled {
+            background: #999;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .slot-machine {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border: 4px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .reels-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+            perspective: 1000px;
+        }
+
+        .reel {
+            width: 120px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #ffd700;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 30px;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .result-message.win {
+            color: #51cf66;
+            text-shadow: 0 0 10px #51cf66;
+        }
+
+        .result-message.lose {
+            color: #ff6b6b;
+            text-shadow: 0 0 10px #ff6b6b;
+        }
+
+        /* ===== RULETKA ===== */
+        .roulette-board { 
+            background: #0a5f0a; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .board-wrapper {
+            min-width: 900px;
+        }
+        
+        .zero-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .numbers-section {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4px;
+            flex: 1;
+        }
+        
+        .rows-column {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 80px;
+        }
+        
+        .row-bet {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e3c72;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+            position: relative;
+            padding: 8px;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .row-bet:active {
+            background: #2a5298;
+            transform: scale(0.95);
+        }
+        
+        .bet-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+            min-height: 60px;
+        }
+        
+        .bet-cell:active {
+            transform: scale(0.95);
+        }
+        
+        .bet-cell.red { background: #c41e3a; color: white; }
+        .bet-cell.black { background: #1a1a1a; color: white; }
+        .bet-cell.green { background: #0a7f0a; color: white; }
+        
+        .bet-amount {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background: #ffd700;
+            color: #000;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            line-height: 1;
+        }
+        
+        .outside-bets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .outside-bet {
+            padding: 20px 10px;
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            font-weight: bold;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 14px;
+            line-height: 1.4;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .outside-bet:active {
+            background: #2a5298;
+            transform: scale(0.95);
+        }
+        
+        .dozens-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .bet-controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .bet-controls button {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+            width: 100%;
+            background: #1e3c72;
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bet-controls button:hover {
+            background: #2a5298;
+        }
+        
+        .bet-controls button.selected {
+            background: #ffd700;
+            color: #000;
+            border: 3px solid #fff;
+        }
+        
+        .bet-controls button.special {
+            grid-column: span 2;
+        }
+        
+        .balance-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .balance-display h3 {
+            color: #ffd700;
+            font-size: 20px;
+        }
+        
+        .game-status {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .game-status.accepting {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .game-status.spinning {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .dealer-controls {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .dealer-controls h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .dealer-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dealer-controls button:hover {
+            background: #ffed4e;
+        }
+        
+        .player-list {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .player-list h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .player-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .player-actions button {
+            width: auto;
+            padding: 5px 15px;
+            margin: 0;
+            font-size: 14px;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .player-actions button:hover {
+            background: #ffed4e;
+        }
+        
+        .result-display {
+            background: #FFD700;
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(15, 52, 96, 0.98);
+            border: 2px solid #ffd700;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .modal-content label {
+            color: #ffd700;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .modal-buttons button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-buttons button:first-child {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .modal-buttons button:first-child:hover {
+            background: #ffed4e;
+        }
+
+        .modal-buttons button:not(:first-child) {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .modal-buttons button:not(:first-child):hover {
+            background: #b71c1c;
+        }
+
+        .modal-buttons button:nth-child(4) {
+            background: #f57c00;
+        }
+
+        .modal-buttons button:nth-child(4):hover {
+            background: #ef6c00;
+        }
+
+        .modal-buttons button:last-child {
+            background: #666;
+        }
+
+        .modal-buttons button:last-child:hover {
+            background: #888;
+        }
+
+        @media (max-width: 768px) {
+            .menu-header h1 {
+                font-size: 2rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slot-info {
+                grid-template-columns: 1fr;
+            }
+
+            .reels-container {
+                gap: 10px;
+            }
+
+            .reel {
+                width: 90px;
+                height: 120px;
+                font-size: 2rem;
+            }
+
+            .board-wrapper {
+                min-width: 100%;
+            }
+            
+            .bet-cell { 
+                font-size: 14px; 
+                min-height: 45px;
+            }
+            
+            .rows-column {
+                width: 60px;
+            }
+            
+            .row-bet {
+                font-size: 11px;
+                min-height: 45px;
+                padding: 4px;
+            }
+            
+            .outside-bet { 
+                padding: 16px 8px; 
+                font-size: 13px;
+                min-height: 65px;
+            }
+            
+            .balance-display h3 { font-size: 18px; }
+            
+            .bet-controls { 
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            
+            .bet-controls button {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .outside-bets-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .bet-cell { 
+                font-size: 12px; 
+                min-height: 40px;
+            }
+            
+            .rows-column { 
+                width: 50px; 
+            }
+            
+            .row-bet {
+                font-size: 10px;
+                min-height: 40px;
+                padding: 3px;
+            }
+            
+            .outside-bet {
+                padding: 14px 6px;
+                font-size: 12px;
+                min-height: 60px;
+            }
+            
+            .bet-amount {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- AUTH SCREEN -->
+        <div id="authScreen">
+            <div class="auth-container">
+                <h1>🎰 CASINO</h1>
+                
+                <div class="tab-buttons">
+                    <button id="loginTabBtn" class="active">Logowanie</button>
+                    <button id="registerTabBtn">Rejestracja</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <div id="loginForm" class="active">
+                    <div class="form-group">
+                        <label>Nazwa użytkownika</label>
+                        <input type="text" id="loginUsername" placeholder="Wpisz nazwę">
+                    </div>
+                    <div class="form-group">
+                        <label>Hasło</label>
+                        <input type="password" id="loginPassword" placeholder="Wpisz hasło">
+                    </div>
+                    <button type="button" class="auth-button" onclick="handleLogin()">Zaloguj</button>
+                    <div id="loginError" class="error"></div>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <div id="registerForm">
+                    <div class="form-group">
+                        <label>Nazwa użytkownika</label>
+                        <input type="text" id="registerUsername" placeholder="Wpisz nazwę">
+                    </div>
+                    <div class="form-group">
+                        <label>Hasło</label>
+                        <input type="password" id="registerPassword" placeholder="Wpisz hasło">
+                    </div>
+                    <div class="form-group">
+                        <label>Powtórz hasło</label>
+                        <input type="password" id="registerPasswordConfirm" placeholder="Powtórz hasło">
+                    </div>
+                    <button type="button" class="auth-button" onclick="handleRegister()">Zarejestruj</button>
+                    <div id="registerError" class="error"></div>
+                    <div id="registerSuccess" class="success"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN MENU -->
+        <div id="mainMenu">
+            <div class="user-info-header">
+                <span>
+                    Zalogowany: <span id="currentUsername"></span>
+                    <span id="adminBadge" class="admin-badge" style="display: none;">ADMIN</span>
+                </span>
+                <button class="logout-btn" onclick="handleLogout()">Wyloguj</button>
+            </div>
+
+            <div class="menu-header">
+                <h1>🎰 CASINO HUB</h1>
+                <p>Wybierz grę i zarabiaj!</p>
+            </div>
+
+            <div class="games-grid">
+                <div class="game-card" onclick="startGame('slots')">
+                    <div class="icon">🎰</div>
+                    <h2>Slot Machine</h2>
+                    <p>Kręć bębnami i wygraj!</p>
+                </div>
+                <div class="game-card" onclick="startGame('roulette')">
+                    <div class="icon">🎡</div>
+                    <h2>Ruletka</h2>
+                    <p>Europejska ruletka</p>
+                </div>
+                <div class="game-card" onclick="startGame('blackjack')">
+                    <div class="icon">🃏</div>
+                    <h2>Blackjack</h2>
+                    <p>Wbij się w 21</p>
+                </div>
+                <div class="game-card" onclick="startGame('poker')">
+                    <div class="icon">♠️</div>
+                    <h2>Poker</h2>
+                    <p>Gra kart dla zdecydowanych</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLOT MACHINE SCREEN -->
+        <div id="slotsScreen" class="game-screen">
+            <div class="game-header">
+                <h1>🎰 Slot Machine</h1>
+                <button class="back-btn" onclick="backToMenu()">← Menu</button>
+            </div>
+
+            <div class="lobby-list-container">
+                <div class="lobby-controls">
+                    <button onclick="toggleCreateSlotLobby()">+ Utwórz lobby</button>
+                </div>
+
+                <div id="createSlotLobbyForm" class="create-lobby-form">
+                    <h3>Utwórz nowe lobby</h3>
+                    <div class="form-row full">
+                        <label>Tryb startowy:</label>
+                        <select id="slotMode" onchange="toggleSlotStartAmount()">
+                            <option value="demo">DEMO (1 000 000 żetonów)</option>
+                            <option value="custom">Własna kwota</option>
+                        </select>
+                    </div>
+                    <div id="slotCustomAmount" class="form-row full" style="display: none;">
+                        <label>Kwota początkowa (max 10 000):</label>
+                        <input type="number" id="slotStartAmount" min="100" max="10000" value="5000" placeholder="Wpisz kwotę">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="createSlotLobby()">Utwórz</button>
+                        <button type="button" class="cancel" onclick="toggleCreateSlotLobby()">Anuluj</button>
+                    </div>
+                </div>
+
+                <h3 style="color: #ffd700; margin-bottom: 15px;">Dostępne lobby:</h3>
+                <div id="slotLobbiesList" class="lobbies-list"></div>
+            </div>
+        </div>
+
+        <!-- SLOT GAME VIEW -->
+        <div id="slotGameContainer" class="slot-game-container">
+            <div class="game-header">
+                <h1>🎰 Slot Machine - Gra</h1>
+                <button class="back-btn" onclick="exitSlotGame()">← Wróć do lobby</button>
+            </div>
+
+            <div class="slot-machine">
+                <h2 style="color: #ffd700; margin-bottom: 20px;">AUTOMAT DO GIER</h2>
+
+                <div class="slot-info">
+                    <div class="slot-balance">
+                        <h3>Twoje żetony</h3>
+                        <div class="amount" id="slotBalance">0</div>
+                    </div>
+                    <div class="slot-controls">
+                        <label>Stawka:</label>
+                        <input type="number" id="slotBet" min="1" max="500" value="10" placeholder="Max 500">
+                        <button id="spinButton" onclick="spinSlots()">KRĘĆ!</button>
+                    </div>
+                </div>
+
+                <div class="reels-container">
+                    <div id="reel1" class="reel">🍎</div>
+                    <div id="reel2" class="reel">🍎</div>
+                    <div id="reel3" class="reel">🍎</div>
+                </div>
+
+                <div id="resultMessage" class="result-message"></div>
+            </div>
+  </div>
+  <!-- ROULETTE SCREEN - LOBBY LIST -->
+        <div id="rouletteScreen" class="game-screen">
+            <div class="game-header">
+                <h1>🎡 Ruletka</h1>
+                <button class="back-btn" onclick="backToMenu()">← Menu</button>
+            </div>
+
+            <div class="lobby-list-container">
+                <div class="lobby-controls">
+                    <button onclick="toggleCreateRouletteLobby()">+ Utwórz lobby</button>
+                </div>
+
+                <div id="createRouletteLobbyForm" class="create-lobby-form">
+                    <h3>Utwórz nowe lobby ruletki</h3>
+                    <div class="form-row full">
+                        <label>Nazwa lobby:</label>
+                        <input type="text" id="rouletteLobbyName" placeholder="Np. Ruletka VIP" value="">
+                    </div>
+                    <div class="form-row full">
+                        <label>Kwota początkowa:</label>
+                        <input type="number" id="rouletteStartMoney" value="5000" min="100" placeholder="Min 100">
+                    </div>
+                    <div class="form-row full">
+                        <label>Tryb ogłaszania wyniku:</label>
+                        <select id="rouletteResultMode">
+                            <option value="manual">Krupier ogłasza wynik ręcznie</option>
+                            <option value="auto">Automatyczne losowanie wyniku</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="createRouletteLobby()">Utwórz</button>
+                        <button type="button" class="cancel" onclick="toggleCreateRouletteLobby()">Anuluj</button>
+                    </div>
+                </div>
+
+                <h3 style="color: #ffd700; margin-bottom: 15px;">Dostępne lobby:</h3>
+                <div id="rouletteLobbiesList" class="lobbies-list"></div>
+            </div>
+        </div>
+
+        <!-- ROULETTE GAME VIEW -->
+        <div id="rouletteGameContainer" class="slot-game-container">
+            <div class="game-header">
+                <h1 id="rouletteGameTitle">🎡 Ruletka</h1>
+                <button class="back-btn" onclick="exitRouletteGame()">← Wróć do lobby</button>
+            </div>
+
+            <!-- DEALER CONTROLS -->
+            <div id="rouletteDealerControls" style="display:none;">
+                <div class="dealer-controls">
+                    <h3>Panel krupiera</h3>
+                    <button id="rouletteStartRoundButton" onclick="startRouletteRound()">Rozpocznij rundę</button>
+                    <button id="rouletteStopBettingButton" onclick="stopRouletteBetting()">Zakończ stawianie</button>
+                    <div class="form-group" id="rouletteResultInputGroup" style="margin-top: 15px;">
+                        <label style="color: #ffd700;">Wynik (0-36):</label>
+                        <input type="number" id="rouletteResultNumber" min="0" max="36" style="padding: 10px; background: rgba(255,255,255,0.1); border: 2px solid #ffd700; border-radius: 8px; color: #fff; width: 100%;">
+                    </div>
+                    <button id="rouletteAnnounceResultButton" onclick="announceRouletteResult()">Ogłoś wynik</button>
+                </div>
+                <div class="player-list">
+                    <h3>Gracze w lobby:</h3>
+                    <div id="roulettePlayerListDealer"></div>
+                </div>
+            </div>
+
+            <!-- PLAYER VIEW -->
+            <div id="roulettePlayerView">
+                <div class="game-status" id="rouletteGameStatus">Oczekiwanie...</div>
+                
+                <div id="rouletteResultDisplay" class="result-display"></div>
+                
+                <div class="balance-display">
+                    <h3 id="roulettePlayerBalance">5000 żetonów</h3>
+                </div>
+                
+                <div id="rouletteBettingInterface" style="display:none;">
+                    <div class="bet-controls">
+                        <button onclick="selectRouletteChip(1)" id="rouletteChip1">1</button>
+                        <button onclick="selectRouletteChip(5)" id="rouletteChip5">5</button>
+                        <button onclick="selectRouletteChip(10)" id="rouletteChip10">10</button>
+                        <button onclick="selectRouletteChip(25)" id="rouletteChip25">25</button>
+                        <button onclick="selectRouletteChip(50)" id="rouletteChip50">50</button>
+                        <button onclick="selectRouletteChip(100)" id="rouletteChip100">100</button>
+                        <button onclick="selectRouletteChip(250)" id="rouletteChip250">250</button>
+                        <button onclick="selectRouletteChip(500)" id="rouletteChip500">500</button>
+                        <button onclick="selectRouletteChip(1000)" id="rouletteChip1000">1000</button>
+                        <button onclick="selectRouletteChip(2500)" id="rouletteChip2500">2500</button>
+                        <button onclick="selectRouletteChip(5000)" id="rouletteChip5000">5000</button>
+                        <button onclick="selectRouletteChip(10000)" id="rouletteChip10000">10K</button>
+                        <button onclick="selectRouletteAllIn()" id="rouletteChipAllin" class="special" style="background:#ff9800;">ALL IN</button>
+                        <button onclick="clearRouletteBets()" class="special" style="background:#d32f2f;">Wyczyść</button>
+                    </div>
+                    
+                    <div class="roulette-board" id="rouletteBoard">
+                        <div class="board-wrapper">
+                            <div class="zero-row">
+                                <div class="bet-cell green" onclick="placeRouletteBet('num_0')">
+                                    0
+                                    <span class="bet-amount" id="roulette_bet_num_0"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="numbers-section">
+                                <div class="numbers-grid" id="rouletteNumbersGrid"></div>
+                                <div class="rows-column">
+                                    <div class="row-bet" onclick="placeRouletteBet('row3')">
+                                        3:1<br><small>R3</small>
+                                        <span class="bet-amount" id="roulette_bet_row3"></span>
+                                    </div>
+                                    <div class="row-bet" onclick="placeRouletteBet('row2')">
+                                        3:1<br><small>R2</small>
+                                        <span class="bet-amount" id="roulette_bet_row2"></span>
+                                    </div>
+                                    <div class="row-bet" onclick="placeRouletteBet('row1')">
+                                        3:1<br><small>R1</small>
+                                        <span class="bet-amount" id="roulette_bet_row1"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dozens-row">
+                                <div class="outside-bet" onclick="placeRouletteBet('dozen1')">
+                                    1-12<br><small>(3:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_dozen1"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('dozen2')">
+                                    13-24<br><small>(3:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_dozen2"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('dozen3')">
+                                    25-36<br><small>(3:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_dozen3"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="outside-bets-grid">
+                                <div class="outside-bet" onclick="placeRouletteBet('low')">
+                                    1-18<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_low"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('even')">
+                                    PARZYSTE<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_even"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('red')">
+                                    🔴<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_red"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('black')">
+                                    ⚫<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_black"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('odd')">
+                                    NIEPARZYSTE<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_odd"></span>
+                                </div>
+                                <div class="outside-bet" onclick="placeRouletteBet('high')">
+                                    19-36<br><small>(2:1)</small>
+                                    <span class="bet-amount" id="roulette_bet_high"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAYER MANAGEMENT MODAL -->
+        <div id="roulettePlayerManageModal" class="modal">
+            <div class="modal-content">
+                <h2>Gracz: <span id="rouletteManagePlayerName"></span></h2>
+                <div class="form-group">
+                    <label>Żetony (+/-):</label>
+                    <input type="number" id="rouletteGiveAmount" placeholder="Wpisz kwotę">
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="rouletteGiveMoney()">Wykonaj</button>
+                    <button onclick="rouletteKickPlayer()">Wyrzuć</button>
+                    <button onclick="rouletteBanPlayer()">Ban</button>
+                    <button onclick="rouletteTransferDealer()">Przekaż krupiera</button>
+                    <button onclick="closeRoulettePlayerModal()">Anuluj</button>
+                </div>
+                <p style="margin-top:10px; font-size:13px; color:#bbb;">
+                    Tylko host (krupier) może zarządzać graczami.
+                </p>
+            </div>
+        </div>
+
+        <!-- BLACKJACK SCREEN -->
+        <div id="blackjackScreen" class="game-screen">
+            <div class="game-header">
+                <h1>🃏 Blackjack</h1>
+                <button class="back-btn" onclick="backToMenu()">← Menu</button>
+            </div>
+            <p style="text-align: center; color: #bbb; margin-top: 30px;">Blackjack - wkrótce</p>
+        </div>
+
+        <!-- POKER SCREEN -->
+        <div id="pokerScreen" class="game-screen">
+            <div class="game-header">
+                <h1>♠️ Poker</h1>
+                <button class="back-btn" onclick="backToMenu()">← Menu</button>
+            </div>
+            <p style="text-align: center; color: #bbb; margin-top: 30px;">Poker - wkrótce</p>
+        </div>
+                                  </div>
+                                  <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, get, update, onValue, push, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtmCFVh-cphMHie6G4Z6ZsFhWEQ1VUd14",
+            authDomain: "ruletka-a4d14.firebaseapp.com",
+            databaseURL: "https://ruletka-a4d14-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ruletka-a4d14",
+            storageBucket: "ruletka-a4d14.firebasestorage.app",
+            messagingSenderId: "546362398339",
+            appId: "1:546362398339:web:a87571cd9dcc72434aadb6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // ===== GLOBAL STATE =====
+        let currentUser = null;
+        let isAdmin = false;
+        
+        // Slot Machine
+        let currentSlotLobbyId = null;
+        let slotLobbyUnsubscribe = null;
+        
+        // Roulette
+        let currentRouletteLobbyId = null;
+        let rouletteLobbyUnsubscribe = null;
+        let selectedRouletteChip = 10;
+        let isRouletteAllIn = false;
+        let selectedRoulettePlayer = null;
+
+        // Admin users
+        const ADMIN_USERS = ['sebs20109', '1', 'filip'];
+
+        // SLOT MACHINE ICONS
+        const slotIcons = ['🍎', '🍊', '🍋', '🍌', '🍉', '⭐', '🔔', '💎'];
+
+        // ROULETTE RED NUMBERS
+        const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+
+        // ===== AUTH FUNCTIONS =====
+        window.handleLogin = async function() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = '';
+
+            if (!username || !password) {
+                errorEl.textContent = 'Wypełnij wszystkie pola';
+                return;
+            }
+
+            try {
+                const snap = await get(ref(db, `users/${username}`));
+                if (!snap.exists() || snap.val().password !== password) {
+                    errorEl.textContent = 'Błędne dane logowania';
+                    return;
+                }
+
+                currentUser = { username };
+                isAdmin = ADMIN_USERS.includes(username);
+                showAuthenticatedUI();
+                clearAuthForms();
+            } catch (e) {
+                errorEl.textContent = 'Błąd: ' + e.message;
+            }
+        };
+
+        window.handleRegister = async function() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerPasswordConfirm').value;
+            const errorEl = document.getElementById('registerError');
+            const successEl = document.getElementById('registerSuccess');
+
+            errorEl.textContent = '';
+            successEl.textContent = '';
+
+            if (!username || !password || !confirm) {
+                errorEl.textContent = 'Wypełnij wszystkie pola';
+                return;
+            }
+
+            if (password !== confirm) {
+                errorEl.textContent = 'Hasła nie zgadzają się';
+                return;
+            }
+
+            if (password.length < 3) {
+                errorEl.textContent = 'Hasło musi mieć co najmniej 3 znaki';
+                return;
+            }
+
+            try {
+                const snap = await get(ref(db, `users/${username}`));
+                if (snap.exists()) {
+                    errorEl.textContent = 'Użytkownik już istnieje';
+                    return;
+                }
+
+                await set(ref(db, `users/${username}`), { username, password });
+                successEl.textContent = 'Rejestracja pomyślna! Przechodź do logowania.';
+                document.getElementById('registerUsername').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerPasswordConfirm').value = '';
+
+                setTimeout(() => {
+                    document.getElementById('loginTabBtn').click();
+                }, 1500);
+            } catch (e) {
+                errorEl.textContent = 'Błąd: ' + e.message;
+            }
+        };
+
+        window.handleLogout = function() {
+            currentUser = null;
+            currentSlotLobbyId = null;
+            currentRouletteLobbyId = null;
+            isAdmin = false;
+            if (slotLobbyUnsubscribe) slotLobbyUnsubscribe();
+            if (rouletteLobbyUnsubscribe) rouletteLobbyUnsubscribe();
+            document.getElementById('authScreen').style.display = 'block';
+            document.getElementById('mainMenu').classList.remove('active');
+            document.getElementById('adminBadge').style.display = 'none';
+            document.querySelectorAll('.game-screen').forEach(el => el.classList.remove('active'));
+            clearAuthForms();
+        };
+
+        function showAuthenticatedUI() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainMenu').classList.add('active');
+            document.getElementById('currentUsername').textContent = currentUser.username;
+            
+            if (isAdmin) {
+                document.getElementById('adminBadge').style.display = 'inline-block';
+            }
+        }
+
+        function clearAuthForms() {
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerPasswordConfirm').value = '';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerSuccess').textContent = '';
+        }
+
+        // ===== TAB SWITCHING =====
+        document.getElementById('loginTabBtn').onclick = function() {
+            this.classList.add('active');
+            document.getElementById('registerTabBtn').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerSuccess').textContent = '';
+        };
+
+        document.getElementById('registerTabBtn').onclick = function() {
+            this.classList.add('active');
+            document.getElementById('loginTabBtn').classList.remove('active');
+            document.getElementById('registerForm').classList.add('active');
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerSuccess').textContent = '';
+        };
+
+        // ===== GAME NAVIGATION =====
+        window.startGame = function(game) {
+            document.getElementById('mainMenu').classList.remove('active');
+            document.querySelectorAll('.game-screen').forEach(el => el.classList.remove('active'));
+
+            if (game === 'slots') {
+                document.getElementById('slotsScreen').classList.add('active');
+                watchSlotLobbies();
+            } else if (game === 'roulette') {
+                document.getElementById('rouletteScreen').classList.add('active');
+                watchRouletteLobbies();
+            } else if (game === 'blackjack') {
+                document.getElementById('blackjackScreen').classList.add('active');
+            } else if (game === 'poker') {
+                document.getElementById('pokerScreen').classList.add('active');
+            }
+        };
+
+        window.backToMenu = function() {
+            document.querySelectorAll('.game-screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('mainMenu').classList.add('active');
+            if (slotLobbyUnsubscribe) slotLobbyUnsubscribe();
+            if (rouletteLobbyUnsubscribe) rouletteLobbyUnsubscribe();
+        };
+                                    // ===== SLOT MACHINE FUNCTIONS =====
+        window.toggleCreateSlotLobby = function() {
+            const form = document.getElementById('createSlotLobbyForm');
+            form.classList.toggle('active');
+        };
+
+        window.toggleSlotStartAmount = function() {
+            const mode = document.getElementById('slotMode').value;
+            const customAmount = document.getElementById('slotCustomAmount');
+            customAmount.style.display = mode === 'custom' ? 'block' : 'none';
+        };
+
+        window.createSlotLobby = async function() {
+            const mode = document.getElementById('slotMode').value;
+            let startAmount = 0;
+
+            if (mode === 'demo') {
+                startAmount = 1000000;
+            } else {
+                const amount = parseInt(document.getElementById('slotStartAmount').value);
+                if (isNaN(amount) || amount < 100 || amount > 10000) {
+                    alert('Kwota musi być między 100 a 10000');
+                    return;
+                }
+                startAmount = amount;
+            }
+
+            try {
+                const lobbiesRef = ref(db, 'slot_lobbies');
+                const newLobbyRef = push(lobbiesRef);
+                const lobbyId = newLobbyRef.key;
+
+                const lobbyData = {
+                    id: lobbyId,
+                    name: `Slot ${currentUser.username} - ${new Date().toLocaleTimeString()}`,
+                    host: currentUser.username,
+                    startAmount: startAmount,
+                    createdAt: new Date().getTime(),
+                    players: {
+                        [currentUser.username]: {
+                            username: currentUser.username,
+                            balance: startAmount,
+                            totalSpent: 0,
+                            totalWon: 0
+                        }
+                    }
+                };
+
+                await set(newLobbyRef, lobbyData);
+                document.getElementById('createSlotLobbyForm').classList.remove('active');
+                document.getElementById('slotMode').value = 'demo';
+                enterSlotGame(lobbyId);
+            } catch (e) {
+                alert('Błąd przy tworzeniu lobby: ' + e.message);
+            }
+        };
+
+        window.deleteLobby = async function(lobbyId) {
+            if (!isAdmin) {
+                alert('Tylko administratorzy mogą usuwać lobby!');
+                return;
+            }
+
+            if (!confirm('Czy na pewno chcesz usunąć to lobby? Wszyscy gracze zostaną wyrzuceni.')) {
+                return;
+            }
+
+            try {
+                await remove(ref(db, `slot_lobbies/${lobbyId}`));
+                alert('Lobby zostało usunięte');
+            } catch (e) {
+                alert('Błąd przy usuwaniu lobby: ' + e.message);
+            }
+        };
+
+        function watchSlotLobbies() {
+            const lobbiesRef = ref(db, 'slot_lobbies');
+            onValue(lobbiesRef, (snap) => {
+                const lobbies = snap.val() || {};
+                const container = document.getElementById('slotLobbiesList');
+
+                const entries = Object.entries(lobbies).map(([id, lobby]) => ({
+                    id,
+                    ...lobby,
+                    createdAt: lobby.createdAt || 0
+                })).sort((a, b) => b.createdAt - a.createdAt);
+
+                if (entries.length === 0) {
+                    container.innerHTML = '<p style="color: #bbb; text-align: center;">Brak dostępnych lobby</p>';
+                } else {
+                    container.innerHTML = entries.map(lobby => {
+                        const playerCount = lobby.players ? Object.keys(lobby.players).length : 0;
+                        const isHost = lobby.host === currentUser.username;
+                        const deleteBtn = isAdmin ? `<button type="button" class="delete-btn" onclick="window.deleteLobby('${lobby.id}')">🗑️ Usuń</button>` : '';
+                        
+                        return `
+                            <div class="lobby-item">
+                                <div>
+                                    <h3>${lobby.name}</h3>
+                                    <p>Host: ${lobby.host} | Start: ${lobby.startAmount.toLocaleString()} żetonów</p>
+                                </div>
+                                <div class="lobby-actions">
+                                    <button type="button" onclick="window.enterSlotGame('${lobby.id}')">${isHost ? 'Wznów grę' : 'Dołącz'}</button>
+                                    ${deleteBtn}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            });
+        }
+
+        window.enterSlotGame = async function(lobbyId) {
+            currentSlotLobbyId = lobbyId;
+
+            try {
+                const snap = await get(ref(db, `slot_lobbies/${lobbyId}`));
+                if (!snap.exists()) {
+                    alert('Lobby nie istnieje');
+                    return;
+                }
+
+                const lobby = snap.val();
+
+                if (!lobby.players || !lobby.players[currentUser.username]) {
+                    await set(ref(db, `slot_lobbies/${lobbyId}/players/${currentUser.username}`), {
+                        username: currentUser.username,
+                        balance: lobby.startAmount,
+                        totalSpent: 0,
+                        totalWon: 0
+                    });
+                }
+
+                document.getElementById('slotsScreen').classList.remove('active');
+                document.getElementById('slotGameContainer').classList.add('active');
+
+                if (slotLobbyUnsubscribe) slotLobbyUnsubscribe();
+                slotLobbyUnsubscribe = onValue(ref(db, `slot_lobbies/${lobbyId}/players/${currentUser.username}`), (snap) => {
+                    if (snap.exists()) {
+                        const player = snap.val();
+                        document.getElementById('slotBalance').textContent = player.balance.toLocaleString();
+                    }
+                });
+
+                const playerSnap = await get(ref(db, `slot_lobbies/${lobbyId}/players/${currentUser.username}`));
+                if (playerSnap.exists()) {
+                    const player = playerSnap.val();
+                    document.getElementById('slotBalance').textContent = player.balance.toLocaleString();
+                }
+            } catch (e) {
+                alert('Błąd: ' + e.message);
+            }
+        };
+
+        window.exitSlotGame = async function() {
+            if (slotLobbyUnsubscribe) slotLobbyUnsubscribe();
+
+            try {
+                const snap = await get(ref(db, `slot_lobbies/${currentSlotLobbyId}`));
+                if (snap.exists()) {
+                    const lobby = snap.val();
+                    await remove(ref(db, `slot_lobbies/${currentSlotLobbyId}/players/${currentUser.username}`));
+
+                    const updatedSnap = await get(ref(db, `slot_lobbies/${currentSlotLobbyId}`));
+                    if (updatedSnap.exists()) {
+                        const updatedLobby = updatedSnap.val();
+                        if (!updatedLobby.players || Object.keys(updatedLobby.players).length === 0) {
+                            await remove(ref(db, `slot_lobbies/${currentSlotLobbyId}`));
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Błąd przy wychodzeniu z gry:', e);
+            }
+
+            currentSlotLobbyId = null;
+            document.getElementById('slotGameContainer').classList.remove('active');
+            document.getElementById('slotsScreen').classList.add('active');
+            watchSlotLobbies();
+        };
+
+        window.spinSlots = async function() {
+            if (!currentSlotLobbyId) return;
+
+            const betInput = document.getElementById('slotBet');
+            const bet = parseInt(betInput.value);
+            const spinButton = document.getElementById('spinButton');
+            const resultMsg = document.getElementById('resultMessage');
+
+            if (isNaN(bet) || bet < 1 || bet > 500) {
+                alert('Stawka musi być między 1 a 500');
+                return;
+            }
+
+            try {
+                const playerSnap = await get(ref(db, `slot_lobbies/${currentSlotLobbyId}/players/${currentUser.username}`));
+                const player = playerSnap.val();
+
+                if (player.balance < bet) {
+                    alert('Za mało żetonów!');
+                    return;
+                }
+
+                spinButton.disabled = true;
+                resultMsg.textContent = '';
+                resultMsg.className = 'result-message';
+
+                const newBalance = player.balance - bet;
+                await update(ref(db, `slot_lobbies/${currentSlotLobbyId}/players/${currentUser.username}`), {
+                    balance: newBalance,
+                    totalSpent: (player.totalSpent || 0) + bet
+                });
+
+                const reels = [
+                    document.getElementById('reel1'),
+                    document.getElementById('reel2'),
+                    document.getElementById('reel3')
+                ];
+
+                reels.forEach(reel => reel.classList.add('spinning'));
+
+                const spinTime = Math.random() * 1500 + 500;
+                await new Promise(resolve => setTimeout(resolve, spinTime));
+
+                reels.forEach(reel => reel.classList.remove('spinning'));
+
+                const results = [];
+                for (let i = 0; i < reels.length; i++) {
+                    const result = Math.floor(Math.random() * slotIcons.length);
+                    results.push(result);
+                    reels[i].textContent = slotIcons[result];
+                }
+
+                const allSame = results[0] === results[1] && results[1] === results[2];
+                let winAmount = 0;
+
+                if (allSame) {
+                    if (results[0] === slotIcons.indexOf('💎')) {
+                        winAmount = bet * 100;
+                    } else if (results[0] === slotIcons.indexOf('⭐')) {
+                        winAmount = bet * 50;
+                    } else {
+                        winAmount = bet * 10;
+                    }
+
+                    resultMsg.textContent = `WYGRANA! +${winAmount} żetonów! 🎉`;
+                    resultMsg.classList.add('win');
+
+                    const updatedBalance = newBalance + winAmount;
+                    await update(ref(db, `slot_lobbies/${currentSlotLobbyId}/players/${currentUser.username}`), {
+                        balance: updatedBalance,
+                        totalWon: (player.totalWon || 0) + winAmount
+                    });
+                } else {
+                    resultMsg.textContent = `Przegrana! -${bet} żetonów`;
+                    resultMsg.classList.add('lose');
+                }
+
+                spinButton.disabled = false;
+            } catch (e) {
+                alert('Błąd: ' + e.message);
+                spinButton.disabled = false;
+            }
+        };
+                                    // ===== ROULETTE FUNCTIONS =====
+        
+        // Roulette helper functions
+        function getRoulettePayoutMultiplier(betType) {
+            if (betType.startsWith('num_')) return 35;
+            if (['red', 'black', 'even', 'odd', 'low', 'high'].includes(betType)) return 2;
+            if (betType.startsWith('dozen')) return 3;
+            if (betType.startsWith('row')) return 4;
+            return 2;
+        }
+
+        function checkRouletteWin(betType, result) {
+            if (betType === `num_${result}`) return true;
+            if (betType === 'red' && redNums.includes(result)) return true;
+            if (betType === 'black' && result !== 0 && !redNums.includes(result)) return true;
+            if (betType === 'even' && result !== 0 && result % 2 === 0) return true;
+            if (betType === 'odd' && result % 2 === 1) return true;
+            if (betType === 'low' && result >= 1 && result <= 18) return true;
+            if (betType === 'high' && result >= 19 && result <= 36) return true;
+            if (betType === 'dozen1' && result >= 1 && result <= 12) return true;
+            if (betType === 'dozen2' && result >= 13 && result <= 24) return true;
+            if (betType === 'dozen3' && result >= 25 && result <= 36) return true;
+            if (betType === 'row1' && result > 0 && (result - 1) % 3 === 0) return true;
+            if (betType === 'row2' && result > 0 && (result - 2) % 3 === 0) return true;
+            if (betType === 'row3' && result > 0 && result % 3 === 0) return true;
+            return false;
+        }
+
+        function buildRouletteNumbersGrid() {
+            const grid = document.getElementById('rouletteNumbersGrid');
+            const layout = [
+                [3,6,9,12,15,18,21,24,27,30,33,36],
+                [2,5,8,11,14,17,20,23,26,29,32,35],
+                [1,4,7,10,13,16,19,22,25,28,31,34]
+            ];
+            
+            grid.innerHTML = '';
+            layout.forEach(row => {
+                row.forEach(num => {
+                    const color = redNums.includes(num) ? 'red' : 'black';
+                    const cell = document.createElement('div');
+                    cell.className = `bet-cell ${color}`;
+                    cell.onclick = () => placeRouletteBet(`num_${num}`);
+                    cell.innerHTML = `${num}<span class="bet-amount" id="roulette_bet_num_${num}"></span>`;
+                    grid.appendChild(cell);
+                });
+            });
+        }
+
+        window.selectRouletteChip = function(value) {
+            selectedRouletteChip = value;
+            isRouletteAllIn = false;
+            document.querySelectorAll('.bet-controls button').forEach(btn => btn.classList.remove('selected'));
+            const chipId = `rouletteChip${value}`;
+            const btn = document.getElementById(chipId);
+            if (btn) btn.classList.add('selected');
+        }
+
+        window.selectRouletteAllIn = function() {
+            isRouletteAllIn = true;
+            selectedRouletteChip = 0;
+            document.querySelectorAll('.bet-controls button').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('rouletteChipAllin').classList.add('selected');
+        }
+
+        window.placeRouletteBet = async function(betType) {
+            if (!currentRouletteLobbyId) {
+                console.error('Brak lobby ID');
+                return;
+            }
+            
+            try {
+                const lobbyRef = ref(db, `roulette_lobbies/${currentRouletteLobbyId}`);
+                const snap = await get(lobbyRef);
+                
+                if (!snap.exists()) {
+                    alert('Lobby nie istnieje');
+                    return;
+                }
+                
+                const lobby = snap.val();
+                
+                if (lobby.gameState !== 'betting') {
+                    alert('Nie można teraz stawiać zakładów');
+                    return;
+                }
+                
+                const player = lobby.players ? lobby.players[currentUser.username] : null;
+                if (!player) {
+                    alert('Nie znaleziono gracza');
+                    return;
+                }
+                
+                let betAmount = selectedRouletteChip;
+                
+                if (isRouletteAllIn) {
+                    betAmount = player.balance;
+                }
+                
+                if (player.balance < betAmount) {
+                    alert('Za mało środków');
+                    return;
+                }
+                
+                if (betAmount <= 0) {
+                    alert('Nieprawidłowa kwota');
+                    return;
+                }
+                
+                const newBal = player.balance - betAmount;
+                const currentBet = (player.bets && player.bets[betType]) ? player.bets[betType] : 0;
+                const newBet = currentBet + betAmount;
+                
+                const updates = {};
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${currentUser.username}/balance`] = newBal;
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${currentUser.username}/bets/${betType}`] = newBet;
+                
+                await update(ref(db), updates);
+                updateRouletteBetDisplay(betType, newBet);
+                
+            } catch (e) {
+                console.error('Błąd stawiania:', e);
+                alert('Błąd: ' + e.message);
+            }
+        }
+
+        function updateRouletteBetDisplay(betType, amount) {
+            const el = document.getElementById(`roulette_bet_${betType}`);
+            if (el) el.textContent = amount > 0 ? amount : '';
+        }
+
+        window.clearRouletteBets = async function() {
+            if (!currentRouletteLobbyId) return;
+            try {
+                const snap = await get(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+                const lobby = snap.val();
+                if (lobby.gameState !== 'betting') return alert('Nie można czyścić');
+                const player = lobby.players[currentUser.username];
+                const bets = player.bets || {};
+                let total = 0;
+                Object.values(bets).forEach(amt => { total += amt; });
+                const updates = {};
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${currentUser.username}/balance`] = player.balance + total;
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${currentUser.username}/bets`] = {};
+                await update(ref(db), updates);
+                Object.keys(bets).forEach(betType => { updateRouletteBetDisplay(betType, 0); });
+            } catch (e) { alert('Błąd'); }
+        }
+
+        window.deleteRouletteLobby = async function(lobbyId) {
+            if (!isAdmin) {
+                alert('Tylko administratorzy mogą usuwać lobby!');
+                return;
+            }
+            
+            if (!confirm('Czy na pewno chcesz usunąć to lobby? Wszyscy gracze zostaną wyrzuceni.')) {
+                return;
+            }
+            
+            try {
+                await remove(ref(db, `roulette_lobbies/${lobbyId}`));
+                alert('Lobby zostało usunięte');
+            } catch (error) {
+                console.error('Błąd usuwania lobby:', error);
+                alert('Nie udało się usunąć lobby: ' + error.message);
+            }
+        }
+
+        window.toggleCreateRouletteLobby = function() {
+            const form = document.getElementById('createRouletteLobbyForm');
+            form.classList.toggle('active');
+        };
+
+        window.createRouletteLobby = async function() {
+            const name = document.getElementById('rouletteLobbyName').value.trim();
+            const moneyInput = document.getElementById('rouletteStartMoney').value;
+            const money = parseInt(moneyInput);
+            const resultMode = document.getElementById('rouletteResultMode').value;
+            
+            if (!name) return alert('Podaj nazwę pokoju!');
+            if (!moneyInput || isNaN(money) || money < 100) return alert('Minimalna kwota startowa to 100!');
+            if (!currentUser || !currentUser.username) return alert('Nie jesteś zalogowany!');
+            
+            try {
+                const lobbiesRef = ref(db, 'roulette_lobbies');
+                const newLobbyRef = push(lobbiesRef);
+                const lobbyId = newLobbyRef.key;
+                
+                const lobbyData = {
+                    name: name,
+                    host: currentUser.username,
+                    startingMoney: money,
+                    resultMode: resultMode,
+                    bannedUsers: {},
+                    gameState: 'waiting',
+                    players: {
+                        [currentUser.username]: {
+                            username: currentUser.username,
+                            balance: money,
+                            bets: {}
+                        }
+                    }
+                };
+                
+                await set(newLobbyRef, lobbyData);
+                
+                document.getElementById('createRouletteLobbyForm').classList.remove('active');
+                document.getElementById('rouletteLobbyName').value = '';
+                document.getElementById('rouletteStartMoney').value = '5000';
+                document.getElementById('rouletteResultMode').value = 'manual';
+                
+                alert(`Pokój "${name}" został utworzony!`);
+                enterRouletteGame(lobbyId);
+            } catch (e) {
+                console.error('Błąd przy tworzeniu pokoju:', e);
+                alert('Nie udało się utworzyć pokoju: ' + e.message);
+            }
+        }
+
+        function watchRouletteLobbies() {
+            onValue(ref(db, 'roulette_lobbies'), (snap) => {
+                const lobbies = snap.val() || {};
+                const container = document.getElementById('rouletteLobbiesList');
+                const entries = Object.entries(lobbies);
+                if (entries.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;color:#bbb;">Brak lobby</p>';
+                } else {
+                    container.innerHTML = entries.map(([id, l]) => {
+                        const pc = l.players ? Object.keys(l.players).length : 0;
+                        const modeIcon = l.resultMode === 'auto' ? ' 🎲' : ' 👨‍💼';
+                        const deleteBtn = isAdmin ? `<button class="delete-btn" onclick="window.deleteRouletteLobby('${id}')">🗑️ Usuń</button>` : '';
+                        return `<div class="lobby-item">
+                            <div class="lobby-info">
+                                <h3>${l.name}${modeIcon}</h3>
+                                <p>Host: ${l.host} | Gracze: ${pc} | Start: ${l.startingMoney} | Tryb: ${l.resultMode === 'auto' ? 'Auto' : 'Ręczny'}</p>
+                            </div>
+                            <div class="lobby-actions">
+                                <button onclick="window.joinRouletteLobby('${id}')">Dołącz</button>
+                                ${deleteBtn}
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            });
+        }
+
+        window.joinRouletteLobby = async function(id) {
+            if (!currentUser || !currentUser.username) {
+                alert('Nie jesteś zalogowany!');
+                return;
+            }
+            
+            try {
+                const snap = await get(ref(db, `roulette_lobbies/${id}`));
+                if (!snap.exists()) return alert('Pokój nie istnieje!');
+                
+                const lobby = snap.val();
+                
+                if (lobby.bannedUsers && lobby.bannedUsers[currentUser.username]) {
+                    return alert('Jesteś zbanowany w tym pokoju!');
+                }
+                
+                if (lobby.players && lobby.players[currentUser.username]) {
+                    alert('Już jesteś w tym pokoju!');
+                    enterRouletteGame(id);
+                    return;
+                }
+                
+                await addPlayerToRouletteLobby(id, lobby);
+            } catch (e) {
+                console.error('Błąd przy dołączaniu:', e);
+                alert('Błąd: ' + e.message);
+            }
+        }
+
+        async function addPlayerToRouletteLobby(id, lobby) {
+            if (!lobby.players || !lobby.players[currentUser.username]) {
+                await set(ref(db, `roulette_lobbies/${id}/players/${currentUser.username}`), {
+                    username: currentUser.username,
+                    balance: lobby.startingMoney,
+                    bets: {}
+                });
+            }
+            alert(`Dołączono do pokoju "${lobby.name}"!`);
+            enterRouletteGame(id);
+                                    }
+                                    function enterRouletteGame(id) {
+            currentRouletteLobbyId = id;
+            document.getElementById('rouletteScreen').classList.remove('active');
+            document.getElementById('rouletteGameContainer').classList.add('active');
+            
+            buildRouletteNumbersGrid();
+            
+            if (rouletteLobbyUnsubscribe) rouletteLobbyUnsubscribe();
+            rouletteLobbyUnsubscribe = onValue(ref(db, `roulette_lobbies/${id}`), (snap) => {
+                if (!snap.exists()) { 
+                    alert('Pokój usunięty'); 
+                    return exitRouletteGame(); 
+                }
+                const lobby = snap.val();
+                document.getElementById('rouletteGameTitle').textContent = `🎡 ${lobby.name}`;
+                
+                if (!lobby.players || !lobby.players[currentUser.username]) {
+                    if (lobby.host !== currentUser.username) { 
+                        alert('Zostałeś wyrzucony'); 
+                        return exitRouletteGame(); 
+                    }
+                }
+                
+                if (lobby.host === currentUser.username) {
+                    document.getElementById('rouletteDealerControls').style.display = 'block';
+                    document.getElementById('roulettePlayerView').style.display = 'none';
+                    updateRoulettePlayerList(lobby);
+                    
+                    const announceBtn = document.getElementById('rouletteAnnounceResultButton');
+                    const resultInputGroup = document.getElementById('rouletteResultInputGroup');
+                    if (lobby.resultMode === 'auto') {
+                        announceBtn.style.display = 'none';
+                        resultInputGroup.style.display = 'none';
+                    } else {
+                        announceBtn.style.display = 'block';
+                        resultInputGroup.style.display = 'block';
+                    }
+                } else {
+                    document.getElementById('rouletteDealerControls').style.display = 'none';
+                    document.getElementById('roulettePlayerView').style.display = 'block';
+                    updateRouletteBalance(lobby);
+                    updateRouletteStatus(lobby.gameState);
+                    document.getElementById('rouletteBettingInterface').style.display = lobby.gameState === 'betting' ? 'block' : 'none';
+                    
+                    if (lobby.gameState === 'result' && lobby.currentResult !== undefined && lobby.currentResult !== null) {
+                        showRouletteResult(lobby.currentResult);
+                    }
+                }
+            });
+        }
+
+        function showRouletteResult(result) {
+            const resultDisplay = document.getElementById('rouletteResultDisplay');
+            const isRed = redNums.includes(result);
+            const color = result === 0 ? '#0a7f0a' : (isRed ? '#c41e3a' : '#1a1a1a');
+            
+            resultDisplay.style.background = color;
+            resultDisplay.style.color = 'white';
+            resultDisplay.textContent = `Wynik: ${result}`;
+            resultDisplay.style.display = 'block';
+            
+            setTimeout(() => {
+                resultDisplay.style.display = 'none';
+            }, 5000);
+        }
+
+        window.exitRouletteGame = async function() {
+            if (rouletteLobbyUnsubscribe) { 
+                rouletteLobbyUnsubscribe(); 
+                rouletteLobbyUnsubscribe = null; 
+            }
+            if (currentRouletteLobbyId) {
+                try {
+                    await remove(ref(db, `roulette_lobbies/${currentRouletteLobbyId}/players/${currentUser.username}`));
+                    const snap = await get(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+                    if (snap.exists()) {
+                        const l = snap.val();
+                        if (!l.players || Object.keys(l.players).length === 0) {
+                            await remove(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+                        }
+                    }
+                } catch (e) {}
+            }
+            currentRouletteLobbyId = null;
+            document.getElementById('rouletteGameContainer').classList.remove('active');
+            document.getElementById('rouletteScreen').classList.add('active');
+        }
+
+        function updateRoulettePlayerList(lobby) {
+            const players = lobby.players || {};
+            document.getElementById('roulettePlayerListDealer').innerHTML = Object.values(players).map(p => 
+                `<div class="player-item">
+                    <div><strong>${p.username}</strong> - ${p.balance} ${p.username === lobby.host ? '👑' : ''}</div>
+                    ${p.username !== lobby.host ? `<div class="player-actions"><button onclick="window.manageRoulettePlayer('${p.username}')">Zarządzaj</button></div>` : ''}
+                </div>`
+            ).join('');
+        }
+
+        window.manageRoulettePlayer = function(user) { 
+            selectedRoulettePlayer = user; 
+            document.getElementById('rouletteManagePlayerName').textContent = user; 
+            document.getElementById('roulettePlayerManageModal').classList.add('active');
+        }
+        
+        window.closeRoulettePlayerModal = function() { 
+            document.getElementById('roulettePlayerManageModal').classList.remove('active'); 
+            selectedRoulettePlayer = null; 
+            document.getElementById('rouletteGiveAmount').value = ''; 
+        }
+
+        window.rouletteGiveMoney = async function() {
+            const amt = parseInt(document.getElementById('rouletteGiveAmount').value);
+            if (isNaN(amt)) return alert('Podaj kwotę');
+            try {
+                const playerRef = ref(db, `roulette_lobbies/${currentRouletteLobbyId}/players/${selectedRoulettePlayer}`);
+                const snap = await get(playerRef);
+                const player = snap.val();
+                let newBal = player.balance + amt;
+                if (newBal < 0) newBal = 0;
+                await update(playerRef, { balance: newBal });
+                closeRoulettePlayerModal();
+            } catch (e) { alert('Błąd'); }
+        }
+
+        window.rouletteKickPlayer = async function() {
+            if (!confirm('Wyrzucić gracza?')) return;
+            try {
+                await remove(ref(db, `roulette_lobbies/${currentRouletteLobbyId}/players/${selectedRoulettePlayer}`));
+                closeRoulettePlayerModal();
+            } catch (e) { alert('Błąd'); }
+        }
+
+        window.rouletteBanPlayer = async function() {
+            if (!confirm('Zbanować gracza?')) return;
+            try {
+                await set(ref(db, `roulette_lobbies/${currentRouletteLobbyId}/bannedUsers/${selectedRoulettePlayer}`), true);
+                await remove(ref(db, `roulette_lobbies/${currentRouletteLobbyId}/players/${selectedRoulettePlayer}`));
+                closeRoulettePlayerModal();
+            } catch (e) { alert('Błąd'); }
+        }
+
+        window.rouletteTransferDealer = async function() {
+            if (!currentRouletteLobbyId || !selectedRoulettePlayer || !currentUser) {
+                alert('Brak wymaganych danych.');
+                return;
+            }
+            
+            try {
+                const lobbyRef = ref(db, `roulette_lobbies/${currentRouletteLobbyId}`);
+                const snapshot = await get(lobbyRef);
+                
+                if (!snapshot.exists()) {
+                    alert('Pokój nie istnieje!');
+                    return;
+                }
+                
+                const lobbyData = snapshot.val();
+                
+                if (lobbyData.host !== currentUser.username) {
+                    alert('Tylko obecny krupier może przekazać tę funkcję!');
+                    return;
+                }
+                
+                if (!lobbyData.players || !lobbyData.players[selectedRoulettePlayer]) {
+                    alert('Wybrany gracz nie znajduje się w pokoju!');
+                    return;
+                }
+                
+                if (!confirm(`Czy na pewno chcesz przekazać funkcję krupiera graczowi ${selectedRoulettePlayer}?`)) {
+                    return;
+                }
+                
+                await update(lobbyRef, { host: selectedRoulettePlayer });
+                
+                alert(`Przekazano funkcję krupiera graczowi: ${selectedRoulettePlayer}`);
+                closeRoulettePlayerModal();
+                
+            } catch (error) {
+                console.error('Błąd przy przekazywaniu krupiera:', error);
+                alert('Wystąpił błąd: ' + error.message);
+            }
+        }
+
+        window.startRouletteRound = async function() {
+            try {
+                const updates = {};
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/gameState`] = 'betting';
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/currentResult`] = null;
+                const snap = await get(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+                const lobby = snap.val();
+                const players = lobby.players || {};
+                Object.keys(players).forEach(username => { 
+                    updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${username}/bets`] = {}; 
+                });
+                await update(ref(db), updates);
+                alert('Runda rozpoczęta!');
+            } catch (e) { alert('Błąd'); }
+        }
+
+        window.stopRouletteBetting = async function() {
+            try {
+                const snap = await get(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+                const lobby = snap.val();
+                
+                if (lobby.resultMode === 'auto') {
+                    const randomResult = Math.floor(Math.random() * 37);
+                    
+                    await update(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`), { 
+                        gameState: 'result',
+                        currentResult: randomResult
+                    });
+                    
+                    alert(`Zakończono stawianie - wylosowano: ${randomResult}`);
+                    
+                    setTimeout(async () => {
+                        await processRouletteResult(randomResult);
+                    }, 5000);
+                } else {
+                    await update(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`), { gameState: 'spinning' });
+                    alert('Zakończono stawianie - wpisz wynik');
+                }
+            } catch (e) { 
+                alert('Błąd'); 
+                console.error(e);
+            }
+        }
+
+        window.announceRouletteResult = async function() {
+            const result = parseInt(document.getElementById('rouletteResultNumber').value);
+            if (isNaN(result) || result < 0 || result > 36) return alert('Podaj 0-36');
+            try {
+                await processRouletteResult(result);
+            } catch (e) { alert('Błąd'); }
+        }
+
+        async function processRouletteResult(result) {
+            const snap = await get(ref(db, `roulette_lobbies/${currentRouletteLobbyId}`));
+            const lobby = snap.val();
+            const updates = {};
+            const players = lobby.players || {};
+            
+            Object.entries(players).forEach(([username, player]) => {
+                let win = 0;
+                const bets = player.bets || {};
+                Object.entries(bets).forEach(([betType, amount]) => {
+                    if (checkRouletteWin(betType, result)) {
+                        const multiplier = getRoulettePayoutMultiplier(betType);
+                        win += amount * multiplier;
+                    }
+                });
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${username}/balance`] = player.balance + win;
+                updates[`roulette_lobbies/${currentRouletteLobbyId}/players/${username}/bets`] = {};
+            });
+            
+            updates[`roulette_lobbies/${currentRouletteLobbyId}/gameState`] = 'waiting';
+            updates[`roulette_lobbies/${currentRouletteLobbyId}/currentResult`] = null;
+            
+            await update(ref(db), updates);
+            document.getElementById('rouletteResultNumber').value = '';
+            alert(`Wynik: ${result}\nRozliczono!`);
+        }
+
+        function updateRouletteBalance(lobby) {
+            const player = lobby.players ? lobby.players[currentUser.username] : null;
+            if (player) {
+                document.getElementById('roulettePlayerBalance').textContent = player.balance + ' żetonów';
+            }
+        }
+
+        function updateRouletteStatus(state) {
+            const statusEl = document.getElementById('rouletteGameStatus');
+            if (state === 'waiting') { 
+                statusEl.textContent = 'Oczekiwanie...'; 
+                statusEl.className = 'game-status'; 
+            } else if (state === 'betting') { 
+                statusEl.textContent = 'Stawiaj! ✅'; 
+                statusEl.className = 'game-status accepting'; 
+            } else if (state === 'spinning' || state === 'result') { 
+                statusEl.textContent = 'Czekaj... 🎲'; 
+                statusEl.className = 'game-status spinning'; 
+            }
+
+              </script>
+</body>
+</html>
