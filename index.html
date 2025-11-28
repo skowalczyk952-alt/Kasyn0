@@ -1597,20 +1597,7 @@
                 watchSlotLobbies();
             } else if (game === 'roulette') {
                 document.getElementById('rouletteScreen').classList.add('active');
-                watchRouletteLobbies();
-            } else if (game === 'blackjack') {
-                document.getElementById('blackjackScreen').classList.add('active');
-            } else if (game === 'poker') {
-                document.getElementById('pokerScreen').classList.add('active');
-            }
-        };
-
-        window.backToMenu = function() {
-            document.querySelectorAll('.game-screen').forEach(el => el.classList.remove('active'));
-            document.getElementById('mainMenu').classList.add('active');
-            if (slotLobbyUnsubscribe) slotLobbyUnsubscribe();
-            if (rouletteLobbyUnsubscribe) rouletteLobbyUnsubscribe();
-        };
+                
                                     // ===== SLOT MACHINE FUNCTIONS =====
         window.toggleCreateSlotLobby = function() {
             const form = document.getElementById('createSlotLobbyForm');
